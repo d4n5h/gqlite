@@ -1,6 +1,6 @@
 const express = require('express'),
     cors = require('cors'),
-    gqLite = require('../index');
+    gqLite = require('./index');
 
 const port = 9090;
 const app = express()
@@ -19,6 +19,7 @@ q.resolve(require('./gqlite/createPost'))
 app.post('/gqlite', q.injectExpress)
 // app.get('/graphicalite', q.graphicaLite)
 
+console.log(q.schemas())
 app.listen(port, () => {
     console.log(`GQLite Example listening at http://localhost:${port}`)
 })

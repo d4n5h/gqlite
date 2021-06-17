@@ -1,4 +1,4 @@
-const client = require('../index').client;
+const client = require('./index').client;
 
 const gqlite = new client('http://localhost:9090/gqlite');
 

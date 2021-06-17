@@ -18,6 +18,11 @@
   "homepage": "https://github.com/d4n5h/gqlite#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "jsonschema": "^1.4.0"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonschema": "^1.4.0",
+    "knex": "^0.95.6",
+    "objection": "^2.2.15",
+    "sqlite3": "^5.0.2"
   }
 }
