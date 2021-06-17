@@ -1,5 +1,6 @@
 const axios = require('axios'),
     validate = require('jsonschema').validate;
+
 module.exports = {
     client: class {
         /**
@@ -12,8 +13,10 @@ module.exports = {
         }
 
         /**
-         * @param  {String} method The 
-         * @param  {Object} payload
+         * Dispatch a GQLite request
+         * @param  {String} model The model's name
+         * @param  {Object} payload The payload to send to the server
+         * @return {Any} The response
          */
         async dispatch(model, payload) {
             if (!model) throw new Error('Model is required');
@@ -55,7 +58,7 @@ module.exports = {
                 } = body;
                 if (!model || !this.models[model]) {
                     callback({
-                        error: 'Method doesn\'t exists'
+                        error: 'Model does not exists'
                     }, null)
                 } else {
                     if (!args) args = {};
