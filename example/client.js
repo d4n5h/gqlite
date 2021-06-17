@@ -1,13 +1,12 @@
 const client = require('../index').client;
 
-const gqLite = new client({
-    server: 'http://localhost:9090/oql'
-});
+const oql = new client('http://localhost:9090/oql');
 
 
-gqLite.dispatch('test', {
+oql.dispatch('test', {
     args: {
         one: 6,
+        two: 6,
 
     },
     fields: {
