@@ -1,8 +1,8 @@
 const client = require('../index').client;
 
-const oql = new client('http://localhost:9090/gqlite');
+const gqlite = new client('http://localhost:9090/gqlite');
 
-oql.dispatch('getUsers', {
+gqlite.dispatch('getUsers', {
     args: {},
     select: [{
         id: '*',
@@ -19,7 +19,7 @@ oql.dispatch('getUsers', {
 })
 
 
-// oql.dispatch('getUser', {
+// gqlite.dispatch('getUser', {
 //     args: {
 //         id: 1,
 //     },
@@ -32,7 +32,7 @@ oql.dispatch('getUsers', {
 //     console.log(err)
 // })
 
-// oql.dispatch('createUser', {
+// gqlite.dispatch('createUser', {
 //     args: {
 //         username: "test2",
 //         password: "password",
@@ -47,7 +47,7 @@ oql.dispatch('getUsers', {
 // })
 
 
-// oql.dispatch('createPost', {
+// gqlite.dispatch('createPost', {
 //     args: {
 //         title: "Example post",
 //         text: "This is an example of a post",

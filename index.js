@@ -29,6 +29,7 @@ module.exports = {
     server: class {
         constructor() {
             this.models = {};
+
             /**
              * Inject to an ExpressJS POST route
              * @param  {Object} req
@@ -40,6 +41,7 @@ module.exports = {
                     res.status(200).json(response)
                 })
             }
+
             /**
              * Process a GQLite request
              * @param  {Object} body
@@ -66,9 +68,29 @@ module.exports = {
                             errors: validation.errors
                         }, null);
                     } else {
-                        const result = await this.models[model].method(args)
-                        callback(null, this.resolveSelect(result, select))
+                        this.models[model].method(args).then((result) => {
+                            callback(null, this.resolveSelect(result, select))
+                        }).catch((err) => {
+                            callback(err, null)
+                        })
+
                     }
+                }
+            }
+
+            /**
+             * Get schema bu key all all schemas
+             * @param  {String} key Optional model key
+             */
+            this.schemas = (key) => {
+                if (key) {
+                    return this.models[key].schema
+                } else {
+                    let schemas = {}
+                    for (const key in this.models) {
+                        schemas[key] = this.models[key].schema
+                    }
+                    return schemas
                 }
             }
         }
