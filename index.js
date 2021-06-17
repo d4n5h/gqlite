@@ -61,7 +61,6 @@ module.exports = {
                         const result = await this.models[model].method(args)
                         callback(null, this.resolveFields(result, fields))
                     }
-
                 }
             }
         }
@@ -84,10 +83,8 @@ module.exports = {
                         if (this.objSize(result[key]) > 0 && fields[key] != '*') result[key] = this.resolveFields(result[key], fields[key])
                     }
                 }
-                return result
-            } else {
-                return result
             }
+            return result
         }
         
         /**
