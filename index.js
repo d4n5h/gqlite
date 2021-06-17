@@ -21,11 +21,12 @@ module.exports = {
             this.methods = {};
 
             this.injectExpress = async (req, res) => {
-                this.process(req.body, (response) => {
+                this.process(req.body, (err, response) => {
+                    if (err) return res.status(400).json(err)
                     res.status(200).json(response)
                 })
             }
-            
+
             this.process = async (body, cb) => {
                 const { args, fields, method } = body;
                 if (!method || !this.methods[method]) {
