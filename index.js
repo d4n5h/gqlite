@@ -3,6 +3,8 @@ const axios = require('axios'),
 module.exports = {
     client: class {
         constructor(options) {
+            if(!options) throw new Error('You must specify options')
+            if(!options.server) throw new Error('You must specify the server\'s url inside options object')
             this.options = options;
         }
         async dispatch(method, payload) {
