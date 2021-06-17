@@ -48,7 +48,7 @@ module.exports = {
             this.process = async (body, callback) => {
                 const {
                     args,
-                    fields,
+                    select,
                     model
                 } = body;
                 if (!model || !this.models[model]) {
@@ -67,7 +67,7 @@ module.exports = {
                         }, null);
                     } else {
                         const result = await this.models[model].method(args)
-                        callback(null, this.resolveFields(result, fields))
+                        callback(null, this.resolveSelect(result, select))
                     }
                 }
             }
@@ -82,18 +82,18 @@ module.exports = {
             return size;
         };
 
-        resolveFields(result, fields) {
-            if (fields) {
-                if (Array.isArray(fields)) {
+        resolveSelect(result, select) {
+            if (select) {
+                if (Array.isArray(select)) {
                     for (let i = 0; i < result.length; i++) {
-                        result[i] = this.resolveFields(result[i], fields[0])
+                        result[i] = this.resolveSelect(result[i], select[0])
                     }
                 } else {
                     for (const key in result) {
-                        if (!fields[key]) {
+                        if (!select[key]) {
                             delete result[key]
                         } else {
-                            if (this.objSize(result[key]) > 0 && fields[key] != '*') result[key] = this.resolveFields(result[key], fields[key])
+                            if (this.objSize(result[key]) > 0 && select[key] != '*') result[key] = this.resolveSelect(result[key], select[key])
                         }
                     }
                 }

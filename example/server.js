@@ -11,30 +11,13 @@ app.use(express.json());
 
 const q = new gqLite.server();
 
-q.resolve({
-    name: 'test',
-    schema: {
-        type: "object",
-        "properties": {
-            "one": { "type": "number" },
-            "two": { "type": "number" }
-        },
-        required: ["one", "two"],
-    },
-    method: (args) => {
-        return new Promise((resolve, reject) => {
-            resolve({
-                result1: {
-                    test1: args.one + args.two,
-                    test2: 123,
-                },
-                result2: args.one - args.two,
-            })
-        })
-    }
-})
+q.resolve(require('./gqlite/getUsers'))
+q.resolve(require('./gqlite/getUser'))
+q.resolve(require('./gqlite/createUser'))
+q.resolve(require('./gqlite/createPost'))
 
-app.post('/oql', q.injectExpress)
+app.post('/gqlite', q.injectExpress)
+// app.get('/graphicalite', q.graphicaLite)
 
 app.listen(port, () => {
     console.log(`GQLite Example listening at http://localhost:${port}`)
