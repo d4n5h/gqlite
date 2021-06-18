@@ -11,15 +11,12 @@ app.use(express.json());
 
 const q = new gqLite.server();
 
-q.resolve(require('./gqlite/getUsers'))
-q.resolve(require('./gqlite/getUser'))
-q.resolve(require('./gqlite/createUser'))
-q.resolve(require('./gqlite/createPost'))
+q.resolve(require('./gqlite/users'))
+q.resolve(require('./gqlite/posts'))
 
 app.post('/gqlite', q.injectExpress)
 // app.get('/graphicalite', q.graphicaLite)
 
-console.log(q.schemas())
 app.listen(port, () => {
     console.log(`GQLite Example listening at http://localhost:${port}`)
 })

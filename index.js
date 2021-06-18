@@ -8,7 +8,7 @@ module.exports = {
          * @param  {String} server The options for the client (Like server)
          */
         constructor(server) {
-            if (!server) throw new Error('You must specify the server\'s URL')
+            if (!server) throw new Error('The server must be specified');
             this.server = server;
         }
 
@@ -51,49 +51,56 @@ module.exports = {
              * @param  {Function} callback
              */
             this.process = async (body, callback) => {
-                const {
+                let {
                     args,
                     select,
                     model
                 } = body;
-                if (!model || !this.models[model]) {
+
+                if (!model) {
                     callback({
-                        error: 'Model does not exists'
+                        error: 'Model is not specified'
                     }, null)
                 } else {
-                    if (!args) args = {};
 
-                    let validation = null;
-                    if (this.models[model].schema) validation = validate(args, this.models[model].schema);
+                    let breadCrumbs = [];
+                    if (model.indexOf('/') >= 0) breadCrumbs = model.split('/')
 
-                    if (validation && validation.errors.length > 0) {
+                    let final = null;
+
+                    for (let i = 0; i < breadCrumbs.length; i++) {
+                        if (!final) {
+                            final = this.models[breadCrumbs[i]].method
+                        } else {
+                            final = final[breadCrumbs[i]].method
+                        }
+                    }
+
+                    if(!final) final = this.models[model].method
+
+                    if (!final) {
                         callback({
-                            errors: validation.errors
-                        }, null);
+                            error: 'Model does not exists'
+                        }, null)
                     } else {
-                        this.models[model].method(args).then((result) => {
-                            callback(null, this.resolveSelect(result, select))
-                        }).catch((err) => {
-                            callback(err, null)
-                        })
+                        if (!args) args = {};
 
-                    }
-                }
-            }
+                        let validation = null;
+                        if (final.query) validation = validate(args, final.query);
 
-            /**
-             * Get schema bu key all all schemas
-             * @param  {String} key Optional model key
-             */
-            this.schemas = (key) => {
-                if (key) {
-                    return this.models[key].schema
-                } else {
-                    let schemas = {}
-                    for (const key in this.models) {
-                        schemas[key] = this.models[key].schema
+                        if (validation && validation.errors.length > 0) {
+                            callback({
+                                errors: validation.errors
+                            }, null);
+                        } else {
+                            final(args).then((result) => {
+                                callback(null, this.resolveSelect(result, select))
+                            }).catch((err) => {
+                                callback(err, null)
+                            })
+
+                        }
                     }
-                    return schemas
                 }
             }
         }
@@ -135,7 +142,7 @@ module.exports = {
             if (!model.method) throw new Error('Model must have a method');
             this.models[model.name] = {
                 method: model.method,
-                schema: model.schema || null
+                query: model.query || null
             }
         }
     }
