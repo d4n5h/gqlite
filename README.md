@@ -133,3 +133,5 @@ Validation of the model itself will be handled in the Objection.js model using:
 ```javascript
 static get jsonSchema(){...}
 ```
+
+Any suggestions, comments, improvements, (some) pull requests are welcomed!
