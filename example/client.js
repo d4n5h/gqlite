@@ -1,4 +1,4 @@
-const client = require('gq-lite').client;
+const client = require('@danisl99/gqlite').client;
 
 const gqlite = new client('http://localhost:9090/gqlite');
 
