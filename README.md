@@ -25,7 +25,7 @@ Eager loading or relationships? left out to be handled by you (or by other libra
 
 By doing so - we remove any part of the system which adds unnecessary performance penalty.
 
-A GQLite request looks like this: (Yes, the empty curly braces are weird, but it's better than wasting computations on parsing a dedicated schema)
+A GQLite request looks like this: (Yes, the empty curly braces are weird. but, it's better than wasting computations on parsing a dedicated schema)
 
 ```javascript
 const client = require('gqlite').client;
