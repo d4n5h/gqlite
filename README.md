@@ -95,6 +95,7 @@ gqliteServer.process(body,(err, response)=>{
     // handle response
 })
 ```
+
 Of course that in the real world, it would be better to use separate files.
 
 Also, note that you can keep adding methods under methods like this:
