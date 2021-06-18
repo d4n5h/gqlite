@@ -1,5 +1,5 @@
 {
-  "name": "gqlite",
+  "name": "gq-lite",
   "version": "1.0.0",
   "description": "GQLite is the 'light' antithesis of GraphQL for Node.js.",
   "main": "index.js",
