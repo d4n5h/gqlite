@@ -74,3 +74,8 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+# Example
+example/node_modules
+example/package-lock.json
+package-lock.json
