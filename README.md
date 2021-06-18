@@ -3,12 +3,17 @@
 ## About
 
 GQLite is the "light" antithesis of GraphQL for Node.js.
-GraphQL = Bloated / GQLite = Simple
-GraphQL = Slow / GQLite = Fast
+
+| GraphQL | GQLite |
+|---------|--------|
+| Bloated | Simple |
+| Slow    | Fast   |
+
+We can solve 95% of what GraphQL is doing and achieve much better performance by stripping down everything that is generally unnecessary.
 
 ### Why "Lite"?
 
-Query parser? Gone since can just use regular old objects.
+Query parser? Gone since can just use regular objects.
 GQL schema? Bye-bye and hello to jsonschema.
 Eager loading or relationships? left out to be handled by you (or by other libraries).
 
@@ -23,6 +28,10 @@ By doing so - we remove any part of the system which adds unnecessary performanc
 A GQLite request looks like this: (Yes, the empty curly braces are weird, but it's better than wasting computations on parsing a dedicated schema)
 
 ```javascript
+const client = require('gqlite').client;
+
+const gqlite = new client('http://localhost:9090/gqlite');
+
 gqlite.dispatch('users/getById', {
     args: {
         id: 1
@@ -43,10 +52,14 @@ gqlite.dispatch('users/getById', {
 })
 ```
 
+We use "[]" in order to indicate that we're filtering an array.
+Asterisk is used to get everything under an array or object.
+
 And the resolver (Using Objection.js):
 
 ```javascript
-{
+const gqliteServer = require('gqlite').server;
+gqliteServer.resolve({
     name: 'users',
     method: {
         getById: {
@@ -70,10 +83,50 @@ And the resolver (Using Objection.js):
             }
         }
     }
+})
+
+
+// Add to Express.js
+app.post('/gqlite', gqliteServer.injectExpress);
+
+// Or use the process function (to be used in other frameworks)
+gqliteServer.process(body,(err, response)=>{
+    // handle err
+    // handle response
+})
+```
+Of course that in the real world, it would be better to use separate files.
+
+Also, note that you can keep adding methods under methods like this:
+
+```javascript
+{
+    name: 'main',
+    method: {
+        child: {
+            query: {...},
+            method: {
+                grandChild:{
+                    query:{...},
+                    method:()=>{}
+                }
+            }
+        }
+    }
 }
 ```
 
-We're only validating the query.
+Or just have one method:
+
+```javascript
+{
+    name: 'main',
+    query:{...}
+    method:()=>{}
+}
+```
+
+Anyway, we're only validating the query.
 Validation of the model itself will be handled in the Objection.js model using:
 
 ```javascript
