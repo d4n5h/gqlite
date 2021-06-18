@@ -1,6 +1,6 @@
 {
   "name": "@danisl99/gqlite",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "GQLite is the 'light' antithesis of GraphQL for Node.js.",
   "keywords": [
     "graphql",

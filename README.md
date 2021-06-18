@@ -4,13 +4,6 @@
 
 GQLite is the "light" antithesis of GraphQL for Node.js.
 
-| GraphQL | GQLite |
-|---------|--------|
-| Bloated | Simple |
-| Slow    | Fast   |
-
-We can solve 95% of what GraphQL is doing and achieve much better performance by stripping down everything that is generally unnecessary.
-
 ### Why "Lite"?
 
 Query parser? Gone since can just use regular objects.
