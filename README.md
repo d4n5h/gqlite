@@ -28,7 +28,7 @@ By doing so - we remove any part of the system which adds unnecessary performanc
 A GQLite request looks like this: (Yes, the empty curly braces are weird. but, it's better than wasting computations on parsing a dedicated schema)
 
 ```javascript
-const client = require('gqlite').client;
+const client = require('gq-lite').client;
 
 const gqlite = new client('http://localhost:9090/gqlite');
 
@@ -58,7 +58,7 @@ Asterisk is used to get everything under an array or object.
 And the resolver (Using Objection.js):
 
 ```javascript
-const gqliteServer = require('gqlite').server;
+const gqliteServer = require('gq-lite').server;
 gqliteServer.resolve({
     name: 'users',
     method: {

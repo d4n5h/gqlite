@@ -1,6 +1,6 @@
 const express = require('express'),
     cors = require('cors'),
-    gqLite = require('./index');
+    gqLite = require('gq-lite');
 
 const port = 9090;
 const app = express()
