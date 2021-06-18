@@ -78,4 +78,5 @@ typings/
 # Example
 example/node_modules
 example/package-lock.json
+example/example.db
 package-lock.json
