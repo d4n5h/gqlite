@@ -114,7 +114,7 @@ gqliteServer.resolve({
 
 
 // Add to Express.js
-app.post('/gqlite', gqliteServer.injectExpress);
+app.all('/gqlite', gqliteServer.injectExpress);
 
 // Or use the process function (to be used in other frameworks)
 gqliteServer.process(req.method, req.body, req.query, (err, response)=>{
