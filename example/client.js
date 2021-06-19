@@ -22,7 +22,7 @@ gqlite.request('users/getAll', {
         }]
     }],
 }).then((response) => {
-    console.log(response.data);
+    console.log(response);
 }).catch((err) => {
     console.log(err)
 })
@@ -72,7 +72,6 @@ gqlite.request('posts/create', {
 })
 
 // For undici
-
 // gqlite.client.close().then(()=>{
 //     console.log('Closed')
 // })

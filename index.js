@@ -16,7 +16,9 @@ module.exports = {
             if (!options) throw new Error('Options must be specified');
             this.options = options
 
-            if (!this.options.headers) this.options.headers = {};
+            if (!this.options.headers) this.options.headers = {
+                'Content-Type': 'application/json'
+            };
 
             if (!this.options.extra) this.options.extra = {};
 

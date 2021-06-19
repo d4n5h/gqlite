@@ -11,7 +11,7 @@ GQLite is the "light" antithesis of GraphQL for Node.js.
 
 ### Why "Lite"?
 
-Query parser? Gone since can just use regular objects.
+Query parser? Gone since we can just use regular objects.
 
 GQL schema? Bye-bye and hello to jsonschema.
 
@@ -120,11 +120,13 @@ gqliteServer.resolve({
 // Add to Express.js
 app.all('/gqlite', gqliteServer.injectExpress);
 
+/*
 // Or use the process function (to be used in other frameworks)
 gqliteServer.process(req.method, req.body, req.query, (err, response)=>{
     // handle err
     // handle response
 })
+*/
 ```
 
 Of course that in the real world, it would be better to use separate files.
