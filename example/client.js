@@ -1,6 +1,10 @@
 const client = require('../index').client;
 
-const gqlite = new client('http://localhost:9090/gqlite');
+const gqlite = new client({
+    server:'http://localhost:9090',
+    path: '/gqlite',
+    headers: {}
+});
 
 gqlite.dispatch('users/getAll', {
     args: {},
@@ -12,8 +16,9 @@ gqlite.dispatch('users/getAll', {
             text: '*',
         }]
     }],
+    type: 'GET'
 }).then((response) => {
-    console.log(response[0].posts);
+    console.log(response);
 }).catch((err) => {
     console.log(err)
 })

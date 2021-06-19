@@ -1,5 +1,7 @@
-const axios = require('axios'),
-    validate = require('jsonschema').validate;
+const {
+    Client
+} = require('undici')
+validate = require('jsonschema').validate;
 
 module.exports = {
     client: class {
@@ -7,11 +9,13 @@ module.exports = {
          * GQLite client
          * @param  {String} server The options for the client (Like server)
          */
-        constructor(server, headers) {
-            if (!server) throw new Error('The server must be specified');
-            this.server = server;
-            if (!headers) headers = {};
-            this.headers = headers;
+        constructor(options) {
+            if (!options) throw new Error('Options must be specified');
+            this.options = options
+            this.client = new Client(options.server)
+            if (!options.headers) options.headers = {};
+
+            this.close = this.client.close
         }
 
         /**
@@ -25,20 +29,38 @@ module.exports = {
                 if (!model) throw new Error('Model is required');
                 if (!payload) payload = {};
                 payload.model = String(model);
+
+                let method = 'POST',
+                    query = null,
+                    path = this.options.path;
+
                 if (payload.type == 'GET') {
-                    payload = encodeURIComponent(JSON.stringify(payload))
-                    axios.get(this.server + '?payload=' + payload, {
-                        headers: this.headers
-                    }).then((response) => {
-                        resolve(response.data);
-                    }).catch((err) => reject(err.response.data));
+                    method = 'GET';
+                    query = encodeURIComponent(JSON.stringify(payload))
+                    path = path += '?payload=' + query
+                    payload = null
                 } else {
-                    axios.post(this.server, payload, {
-                        headers: this.headers
-                    }).then((response) => {
-                        resolve(response.data);
-                    }).catch((err) => reject(err.response.data));
+                    payload = JSON.stringify(payload)
                 }
+
+                this.client.request({
+                    path: path,
+                    method: method,
+                    body: payload,
+                    headers: this.headers
+                }, (err, data) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        const {
+                            body
+                        } = data
+                        body.setEncoding('utf8')
+                        body.on('data', (data) => {
+                            resolve(JSON.parse(data));
+                        })
+                    }
+                })
             })
         }
     },
@@ -52,10 +74,17 @@ module.exports = {
              * @param  {Object} res
              */
             this.injectExpress = async (req, res) => {
-                this.process(req.method, req.body, req.query, (err, response) => {
-                    if (err) return res.status(400).json(err)
-                    res.status(200).json(response)
-                })
+                let data = '';
+                req.on('data', (chunk) => {
+                    data += chunk;
+                });
+                req.on('end', () => {
+                    if (data !== '') data = JSON.parse(data)
+                    this.process(req.method, data, req.query, (err, response) => {
+                        if (err) return res.status(400).json(err)
+                        res.status(200).json(response)
+                    })
+                });
             }
 
             /**
@@ -124,7 +153,9 @@ module.exports = {
                             // All good, let's proceed by selecting what we want from the result
                             final(args).then((result) => {
                                 // Done
-                                callback(null, this._resolveSelect(result, select))
+                                callback(null, {
+                                    data: this._resolveSelect(result, select)
+                                })
                             }).catch((err) => {
                                 // Damn
                                 callback(err, null)
