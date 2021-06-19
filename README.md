@@ -1,4 +1,9 @@
-# GQLite
+<img src="https://user-images.githubusercontent.com/1638614/122630088-8e67ee80-d0eb-11eb-94b7-b0b2529f8a4e.png" alt="GQLite" width="200"/>
+
+## Installation
+```
+$ npm install @danisl99/gqlite
+```
 
 ## About
 
@@ -7,8 +12,11 @@ GQLite is the "light" antithesis of GraphQL for Node.js.
 ### Why "Lite"?
 
 Query parser? Gone since can just use regular objects.
+
 GQL schema? Bye-bye and hello to jsonschema.
+
 Eager loading or relationships? left out to be handled by you (or by other libraries).
+
 
 ### So we're left with a really simple concept
 
@@ -17,6 +25,7 @@ Eager loading or relationships? left out to be handled by you (or by other libra
 3. That's it.
 
 By doing so - we remove any part of the system which adds unnecessary performance penalty.
+
 
 A GQLite request looks like this: (Yes, the empty curly braces are weird. but, it's better than wasting computations on parsing a dedicated schema)
 
@@ -46,6 +55,7 @@ gqlite.dispatch('users/getById', {
 ```
 
 We use "[]" in order to indicate that we're filtering an array.
+
 Asterisk is used to get everything under an array or object.
 
 And the resolver (Using Objection.js):
@@ -120,11 +130,14 @@ Or just have one method:
 }
 ```
 
-Anyway, we're only validating the query.
-Validation of the model itself will be handled in the Objection.js model using:
+Please note that the validation of the model itself will be handled in the Objection.js model using:
 
 ```javascript
 static get jsonSchema(){...}
 ```
+
+For a more "complete" example, you can checkout the ./example directory:
+
+https://github.com/d4n5h/gqlite/tree/main/example
 
 Any suggestions, comments, improvements, (some) pull requests are welcomed!

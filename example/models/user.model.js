@@ -13,14 +13,37 @@ class User extends Model {
 
     static relationMappings = {
         posts: {
-          relation: Model.HasManyRelation,
-          modelClass: Post,
-          join: {
-            from: 'users.id',
-            to: 'posts.parentId'
-          }
+            relation: Model.HasManyRelation,
+            modelClass: Post,
+            join: {
+                from: 'users.id',
+                to: 'posts.parentId'
+            }
         }
-      };
+    };
+
+    static get jsonSchema() {
+        return {
+            type: 'object',
+            required: ['username', 'password'],
+
+            properties: {
+                id: {
+                    type: 'integer'
+                },
+                username: {
+                    type: 'string',
+                    minLength: 3,
+                    maxLength: 50
+                },
+                password: {
+                    type: 'string',
+                    minLength: 6,
+                    maxLength: 50
+                },
+            }
+        };
+    }
 }
 
 async function createSchema() {
