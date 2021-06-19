@@ -6,7 +6,7 @@ const gqlite = new client({
     headers: {}
 });
 
-gqlite.dispatch('users/getAll', {
+gqlite.request('users/getAll', {
     args: {},
     select: [{
         id: '*',
@@ -24,7 +24,7 @@ gqlite.dispatch('users/getAll', {
 })
 
 
-gqlite.dispatch('users/getById', {
+gqlite.request('users/getById', {
     args: {
         id: 1,
     },
@@ -37,7 +37,7 @@ gqlite.dispatch('users/getById', {
     console.log(err)
 })
 
-gqlite.dispatch('users/create', {
+gqlite.request('users/create', {
     args: {
         username: "test2",
         password: "password",
@@ -52,7 +52,7 @@ gqlite.dispatch('users/create', {
 })
 
 
-gqlite.dispatch('posts/create', {
+gqlite.request('posts/create', {
     args: {
         title: "Example post",
         text: "This is an example of a post",

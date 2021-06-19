@@ -24,7 +24,7 @@ module.exports = {
          * @param  {Object} payload The payload to send to the server
          * @return {Any} The response
          */
-        async dispatch(model, payload) {
+        async request(model, payload) {
             return new Promise((resolve, reject) => {
                 if (!model) throw new Error('Model is required');
                 if (!payload) payload = {};

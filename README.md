@@ -34,7 +34,7 @@ const client = require('@danisl99/gqlite').client;
 
 const gqlite = new client('http://localhost:9090/gqlite');
 
-gqlite.dispatch('users/getById', {
+gqlite.request('users/getById', {
     args: {
         id: 1
     },
@@ -61,7 +61,7 @@ Asterisk is used to get everything under an array or object.
 You can also perform the request via a GET method instead of a POST method by adding (type:'GET'):
 
 ```javascript
-gqlite.dispatch('users/getById', {
+gqlite.request('users/getById', {
     args: {
         id: 1
     },
