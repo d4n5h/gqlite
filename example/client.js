@@ -1,9 +1,14 @@
 const client = require('../index').client;
 
+
 const gqlite = new client({
     server:'http://localhost:9090',
     path: '/gqlite',
-    headers: {}
+    client:'axios', // or 'undici'
+    headers: {},
+    extra:{
+        // Extra options for axios or undici
+    }
 });
 
 gqlite.request('users/getAll', {

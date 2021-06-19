@@ -1,19 +1,44 @@
 const {
     Client
-} = require('undici')
+} = require('undici'),
+    axios = require('axios'),
+    http = require('http'),
+    https = require('https')
 validate = require('jsonschema').validate;
 
 module.exports = {
     client: class {
         /**
          * GQLite client
-         * @param  {String} server The options for the client (Like server)
+         * @param  {Object} options The options for the client (Like server)
          */
         constructor(options) {
             if (!options) throw new Error('Options must be specified');
             this.options = options
-            this.client = new Client(options.server)
-            if (!options.headers) options.headers = {};
+
+            if (!this.options.headers) this.options.headers = {};
+
+            if (!this.options.extra) this.options.extra = {};
+
+            if (!this.options.client) this.options.client = 'axios';
+
+            if (this.options.client == 'axios') {
+                this.client = axios.create({
+                    timeout: 60000,
+                    httpAgent: new http.Agent({
+                        keepAlive: true
+                    }),
+                    httpsAgent: new https.Agent({
+                        keepAlive: true
+                    }),
+
+                    maxRedirects: 10,
+
+                    ...this.options.extra
+                });
+            } else if (this.options.client == 'undici') {
+                this.client = new Client(this.options.server, this.options.extra)
+            }
         }
 
         /**
@@ -41,24 +66,37 @@ module.exports = {
                     payload = JSON.stringify(payload)
                 }
 
-                this.client.request({
-                    path: path,
-                    method: method,
-                    body: payload,
-                    headers: this.headers
-                }, (err, data) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        const {
-                            body
-                        } = data
-                        body.setEncoding('utf8')
-                        body.on('data', (data) => {
-                            resolve(JSON.parse(data));
-                        })
-                    }
-                })
+                if (this.options.client == 'axios') {
+                    this.client({
+                        method: method,
+                        url: this.options.server + path,
+                        data: payload,
+                        headers: this.options.headers
+                    }).then((response) => {
+                        resolve(response.data);
+                    }).catch((err) => {
+                        reject(err);
+                    })
+                } else if (this.options.client == 'undici') {
+                    this.client.request({
+                        path: path,
+                        method: method,
+                        body: payload,
+                        headers: this.headers
+                    }, (err, data) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            const {
+                                body
+                            } = data
+                            body.setEncoding('utf8')
+                            body.on('data', (data) => {
+                                resolve(JSON.parse(data));
+                            })
+                        }
+                    })
+                }
             })
         }
     },
