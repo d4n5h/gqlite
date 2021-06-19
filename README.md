@@ -58,6 +58,30 @@ We use "[]" in order to indicate that we're filtering an array.
 
 Asterisk is used to get everything under an array or object.
 
+You can also perform the request via a GET method instead of a POST method by adding (type:'GET'):
+
+```javascript
+gqlite.dispatch('users/getById', {
+    args: {
+        id: 1
+    },
+    select: [{
+        id: {},
+        username: {},
+        posts: [{
+            id: {},
+            text: {},
+        }],
+        friends: ['*']
+    }],
+    type:'GET'
+}).then((response) => {
+    console.log(response);
+}).catch((err) => {
+    console.log(err)
+})
+```
+
 And the resolver (Using Objection.js):
 
 ```javascript

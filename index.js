@@ -7,9 +7,11 @@ module.exports = {
          * GQLite client
          * @param  {String} server The options for the client (Like server)
          */
-        constructor(server) {
+        constructor(server, headers) {
             if (!server) throw new Error('The server must be specified');
             this.server = server;
+            if (!headers) headers = {};
+            this.headers = headers;
         }
 
         /**
@@ -19,13 +21,24 @@ module.exports = {
          * @return {Any} The response
          */
         async dispatch(model, payload) {
-            if (!model) throw new Error('Model is required');
-            if (!payload) payload = {};
-            payload.model = String(model);
             return new Promise((resolve, reject) => {
-                axios.post(this.server, payload).then((response) => {
-                    resolve(response.data);
-                }).catch((err) => reject(err.response.data));
+                if (!model) throw new Error('Model is required');
+                if (!payload) payload = {};
+                payload.model = String(model);
+                if (payload.type == 'GET') {
+                    payload = encodeURIComponent(JSON.stringify(payload))
+                    axios.get(this.server + '?payload=' + payload, {
+                        headers: this.headers
+                    }).then((response) => {
+                        resolve(response.data);
+                    }).catch((err) => reject(err.response.data));
+                } else {
+                    axios.post(this.server, payload, {
+                        headers: this.headers
+                    }).then((response) => {
+                        resolve(response.data);
+                    }).catch((err) => reject(err.response.data));
+                }
             })
         }
     },
@@ -39,7 +52,7 @@ module.exports = {
              * @param  {Object} res
              */
             this.injectExpress = async (req, res) => {
-                this.process(req.body, (err, response) => {
+                this.process(req.method, req.body, req.query, (err, response) => {
                     if (err) return res.status(400).json(err)
                     res.status(200).json(response)
                 })
@@ -47,15 +60,23 @@ module.exports = {
 
             /**
              * Process a GQLite request
+             * @param  {String} method
              * @param  {Object} body
+             * @param  {Object} query
              * @param  {Function} callback
              */
-            this.process = async (body, callback) => {
-                let {
-                    args,
-                    select,
-                    model
-                } = body;
+            this.process = async (method, body, query, callback) => {
+                let args, select, model
+                if (method == 'GET') {
+                    const parsed = JSON.parse(query.payload)
+                    args = parsed.args
+                    select = parsed.select
+                    model = parsed.model
+                } else {
+                    args = body.args
+                    select = body.select
+                    model = body.model
+                }
 
                 if (!model) {
                     callback({
@@ -76,7 +97,7 @@ module.exports = {
                         }
                     }
 
-                    if(!final) final = this.models[model].method
+                    if (!final) final = this.models[model].method
 
                     if (!final) {
                         callback({
@@ -115,23 +136,24 @@ module.exports = {
         };
 
         resolveSelect(result, select) {
-            if (select) {
-                if (Array.isArray(select)) {
-                    for (let i = 0; i < result.length; i++) {
-                        result[i] = this.resolveSelect(result[i], select[0])
-                    }
-                } else {
+            if (Array.isArray(result)) {
+                for (let i = 0; i < result.length; i++) {
+                    result[i] = this.resolveSelect(result[i], select[0])
+                }
+            } else {
+                if (select != '*' && select != {}) {
                     for (const key in result) {
-                        if (!select[key]) {
-                            delete result[key]
+                        if (select[key]) {
+                            result[key] = this.resolveSelect(result[key], select[key])
                         } else {
-                            if (this.objSize(result[key]) > 0 && select[key] != '*') result[key] = this.resolveSelect(result[key], select[key])
+                            delete result[key]
                         }
                     }
                 }
             }
             return result
         }
+        
 
         /**
          * Resolve a model
