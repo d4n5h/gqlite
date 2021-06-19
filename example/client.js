@@ -72,6 +72,7 @@ gqlite.request('posts/create', {
     console.log(err)
 })
 
-gqlite.client.close().then(()=>{
-    console.log('Closed')
-})
+// For undici
+// gqlite.client.close().then(()=>{
+//     console.log('Closed')
+// })
