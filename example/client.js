@@ -14,16 +14,15 @@ const gqlite = new client({
 gqlite.request('users/getAll', {
     args: {},
     select: [{
-        id: '*',
-        username: '*',
+        id: {},
+        username: {},
         posts: [{
-            id: '*',
-            text: '*',
+            id: {},
+            text: {},
         }]
     }],
-    type: 'GET'
 }).then((response) => {
-    console.log(response);
+    console.log(response.data);
 }).catch((err) => {
     console.log(err)
 })
@@ -34,7 +33,7 @@ gqlite.request('users/getById', {
         id: 1,
     },
     select: {
-        username:'*'
+        username:{}
     },
 }).then((response) => {
     console.log(response);
@@ -48,7 +47,7 @@ gqlite.request('users/create', {
         password: "password",
     },
     select: {
-        username:'*'
+        username:{}
     },
 }).then((response) => {
     console.log(response);
@@ -64,7 +63,7 @@ gqlite.request('posts/create', {
         parentId: 1,
     },
     select: {
-        id:'*'
+        id:{}
     },
 }).then((response) => {
     console.log(response);
@@ -73,6 +72,7 @@ gqlite.request('posts/create', {
 })
 
 // For undici
+
 // gqlite.client.close().then(()=>{
 //     console.log('Closed')
 // })

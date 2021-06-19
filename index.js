@@ -36,7 +36,12 @@ module.exports = {
 
                     ...this.options.extra
                 });
+
+                this.options.path = this.options.path += '?client=axios';
+
             } else if (this.options.client == 'undici') {
+
+                this.options.path = this.options.path += '?client=undici';
                 this.client = new Client(this.options.server, this.options.extra)
             }
         }
@@ -60,10 +65,10 @@ module.exports = {
                 if (payload.type == 'GET') {
                     method = 'GET';
                     query = encodeURIComponent(JSON.stringify(payload))
-                    path = path += '?payload=' + query
+                    path = path += '&payload=' + query
                     payload = null
                 } else {
-                    payload = JSON.stringify(payload)
+                    if(this.options.client == 'undici') payload = JSON.stringify(payload);
                 }
 
                 if (this.options.client == 'axios') {
@@ -110,17 +115,24 @@ module.exports = {
              * @param  {Object} res
              */
             this.injectExpress = async (req, res) => {
-                let data = '';
-                req.on('data', (chunk) => {
-                    data += chunk;
-                });
-                req.on('end', () => {
-                    if (data !== '') data = JSON.parse(data)
-                    this.process(req.method, data, req.query, (err, response) => {
+                if (req.query.client == 'axios') {
+                    this.process(req.method, req.body, req.query, (err, response) => {
                         if (err) return res.status(400).json(err)
                         res.status(200).json(response)
                     })
-                });
+                } else {
+                    let data = '';
+                    req.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    req.on('end', () => {
+                        this.process(req.method, JSON.parse(data), req.query, (err, response) => {
+                            if (err) return res.status(400).json(err)
+                            res.status(200).json(response)
+                        })
+                    });
+
+                }
             }
 
             /**
@@ -215,7 +227,7 @@ module.exports = {
                 }
             } else {
                 // The result is not an array
-                if (select != '*' && select != {}) {
+                if (select != '*' && Object.keys(select).length != 0) {
                     for (const key in result) {
                         if (select[key]) {
                             // We've selected this key
