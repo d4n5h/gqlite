@@ -117,7 +117,7 @@ gqliteServer.resolve({
 app.post('/gqlite', gqliteServer.injectExpress);
 
 // Or use the process function (to be used in other frameworks)
-gqliteServer.process(body,(err, response)=>{
+gqliteServer.process(req.method, req.body, req.query, (err, response)=>{
     // handle err
     // handle response
 })

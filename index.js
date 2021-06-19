@@ -68,11 +68,13 @@ module.exports = {
             this.process = async (method, body, query, callback) => {
                 let args, select, model
                 if (method == 'GET') {
+                    // The method is GET
                     const parsed = JSON.parse(query.payload)
                     args = parsed.args
                     select = parsed.select
                     model = parsed.model
                 } else {
+                    // Not GET
                     args = body.args
                     select = body.select
                     model = body.model
@@ -84,6 +86,7 @@ module.exports = {
                     }, null)
                 } else {
 
+                    // Process breadcrumbs/namepaces (grandfather/father/child/grandchild/and so on...)
                     let breadCrumbs = [];
                     if (model.indexOf('/') >= 0) breadCrumbs = model.split('/')
 
@@ -97,55 +100,61 @@ module.exports = {
                         }
                     }
 
+                    // No breadcrumbs, so just get the main method
                     if (!final) final = this.models[model].method
 
                     if (!final) {
+                        // Model doesn't exists
                         callback({
                             error: 'Model does not exists'
                         }, null)
                     } else {
+                        // Model exists, now lets validate the argumetns
                         if (!args) args = {};
 
                         let validation = null;
                         if (final.query) validation = validate(args, final.query);
 
                         if (validation && validation.errors.length > 0) {
+                            // There's errors
                             callback({
                                 errors: validation.errors
                             }, null);
                         } else {
+                            // All good, let's proceed by selecting what we want from the result
                             final(args).then((result) => {
-                                callback(null, this.resolveSelect(result, select))
+                                // Done
+                                callback(null, this._resolveSelect(result, select))
                             }).catch((err) => {
+                                // Damn
                                 callback(err, null)
                             })
-
                         }
                     }
                 }
             }
         }
-
-        objSize(obj) {
-            let size = 0,
-                key;
-            for (key in obj) {
-                if (obj.hasOwnProperty(key)) size++;
-            }
-            return size;
-        };
-
-        resolveSelect(result, select) {
+        /**
+         * Select the data from the result
+         * @param  {Any} result
+         * @param  {Object, Array} select
+         */
+        _resolveSelect(result, select) {
             if (Array.isArray(result)) {
+                // The result is an array
                 for (let i = 0; i < result.length; i++) {
-                    result[i] = this.resolveSelect(result[i], select[0])
+                    // Process array children
+                    result[i] = this._resolveSelect(result[i], select[0])
                 }
             } else {
+                // The result is not an array
                 if (select != '*' && select != {}) {
                     for (const key in result) {
                         if (select[key]) {
-                            result[key] = this.resolveSelect(result[key], select[key])
+                            // We've selected this key
+                            result[key] = this._resolveSelect(result[key], select[key])
                         } else {
+                            // Didn't select this key, so let's remove it
                             delete result[key]
                         }
                     }
@@ -153,7 +162,7 @@ module.exports = {
             }
             return result
         }
-        
+
 
         /**
          * Resolve a model
