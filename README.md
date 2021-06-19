@@ -52,6 +52,10 @@ gqlite.request('users/getById', {
 }).catch((err) => {
     console.log(err)
 })
+
+gqlite.client.close().then(()=>{
+    console.log('Closed')
+})
 ```
 
 We use "[]" in order to indicate that we're filtering an array.

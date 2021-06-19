@@ -14,8 +14,6 @@ module.exports = {
             this.options = options
             this.client = new Client(options.server)
             if (!options.headers) options.headers = {};
-
-            this.close = this.client.close
         }
 
         /**

@@ -66,3 +66,7 @@ gqlite.request('posts/create', {
 }).catch((err) => {
     console.log(err)
 })
+
+gqlite.client.close().then(()=>{
+    console.log('Closed')
+})
