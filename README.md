@@ -32,7 +32,10 @@ A GQLite request looks like this: (Yes, the empty braces are weird. but, it's be
 ```javascript
 const client = require('@danisl99/gqlite').client;
 
-const gqlite = new client('http://localhost:9090/gqlite');
+const gqlite = new client({
+    server:'http://localhost:9090',
+    path: '/gqlite'
+});
 
 gqlite.request('users/getById', {
     args: {
