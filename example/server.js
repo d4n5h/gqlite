@@ -1,6 +1,6 @@
 const express = require('express'),
     cors = require('cors'),
-    gqLite = require('../index').server;
+    gqliteServer = require('../index').server;
 
 const port = 9090;
 const app = express()
@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const q = new gqLite();
+const q = new gqliteServer();
 
 q.resolve(require('./gqlite/users'))
 q.resolve(require('./gqlite/posts'))

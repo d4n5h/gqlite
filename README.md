@@ -93,7 +93,10 @@ And the resolver (Using Objection.js):
 
 ```javascript
 const gqliteServer = require('@danisl99/gqlite').server;
-gqliteServer.resolve({
+
+const q = new gqliteServer();
+
+q.resolve({
     name: 'users',
     method: {
         getById: {
@@ -121,11 +124,11 @@ gqliteServer.resolve({
 
 
 // Add to Express.js
-app.all('/gqlite', gqliteServer.injectExpress);
+app.all('/gqlite', q.injectExpress);
 
 /*
 // Or use the process function (to be used in other frameworks)
-gqliteServer.process(req.method, req.body, req.query, (err, response)=>{
+q.process(req.method, req.body, req.query, (err, response)=>{
     // handle err
     // handle response
 })
