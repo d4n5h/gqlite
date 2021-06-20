@@ -16,11 +16,11 @@ gqlite.request('users/getAll', {
     select: [{
         id: {},
         username: {},
-        posts: []
+        posts: '*'
     }],
     type: 'GET',
 }).then((response) => {
-    console.log(response);
+    console.log(response.data[0].posts);
 }).catch((err) => {
     console.log(err)
 })
@@ -68,6 +68,7 @@ gqlite.request('posts/create', {
 }).catch((err) => {
     console.log(err)
 })
+
 
 // For undici
 // gqlite.client.close().then(()=>{

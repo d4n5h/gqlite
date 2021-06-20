@@ -16,7 +16,7 @@ module.exports = class {
             if (req.query.client == 'axios') {
                 this.process(req.method, req.body, req.query, (err, response) => {
                     if (err) return res.status(400).json(err)
-                    
+
                     res.status(200).json(response)
                 })
             } else {
@@ -124,25 +124,27 @@ module.exports = class {
      * @param  {Object, Array} select
      */
     _resolveSelect(result, select) {
-        if (Array.isArray(result)) {
-            if (select.length != 0) {
-                // The result is an array
-                for (let i = 0; i < result.length; i++) {
-                    // Process array children
-                    result[i] = this._resolveSelect(result[i], select[0])
+        if (select != '*') {
+            if (Array.isArray(result)) {
+                if (select.length != 0) {
+                    // The result is an array
+                    for (let i = 0; i < result.length; i++) {
+                        // Process array children
+                        result[i] = this._resolveSelect(result[i], select[0])
+                    }
                 }
-            }
-        } else {
-            // The result is not an array
-            if (select != '*' && Object.keys(select).length != 0) {
-                // The object is not a wildcard and not empty
-                for (const key in result) {
-                    if (select[key]) {
-                        // We've selected this key
-                        result[key] = this._resolveSelect(result[key], select[key])
-                    } else {
-                        // Didn't select this key, so let's remove it
-                        delete result[key]
+            } else {
+                // The result is not an array
+                if (Object.keys(select).length != 0) {
+                    // The object is not a wildcard and not empty
+                    for (const key in result) {
+                        if (select[key]) {
+                            // We've selected this key
+                            result[key] = this._resolveSelect(result[key], select[key])
+                        } else {
+                            // Didn't select this key, so let's remove it
+                            delete result[key]
+                        }
                     }
                 }
             }

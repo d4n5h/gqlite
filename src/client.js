@@ -62,7 +62,7 @@ module.exports = class {
                 query = null,
                 path = this.options.path;
 
-            if (payload.type.toUpperCase() == 'GET') {
+            if (payload.type && payload.type.toUpperCase() == 'GET') {
                 method = 'GET';
                 query = encodeURIComponent(JSON.stringify(payload))
                 path = path += '&payload=' + query
