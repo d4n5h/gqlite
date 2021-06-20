@@ -52,15 +52,15 @@ gqlite.request('users/getById', {
 }).catch((err) => {
     console.log(err)
 })
-
-gqlite.client.close().then(()=>{
-    console.log('Closed')
-})
 ```
 
-We use "[]" in order to indicate that we're filtering an array.
+Braces ([]) in order to indicate that we're filtering an array.
 
-Asterisk is used to get everything under an array or object.
+Asterisk (*) is used to get everything under an array or object.
+
+Empty braces ([]) are used to get everything under an array.
+
+Empty curly braces ({}) are used to get everything under an object.
 
 You can also perform the request via a GET method instead of a POST method by adding (type:'GET'):
 

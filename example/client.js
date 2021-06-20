@@ -16,11 +16,9 @@ gqlite.request('users/getAll', {
     select: [{
         id: {},
         username: {},
-        posts: [{
-            id: {},
-            text: {},
-        }]
+        posts: []
     }],
+    type: 'GET',
 }).then((response) => {
     console.log(response);
 }).catch((err) => {
