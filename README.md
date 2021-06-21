@@ -176,4 +176,10 @@ For a more "complete" example, you can checkout the ./example directory:
 
 https://github.com/d4n5h/gqlite/tree/main/example
 
+
+### TODO
+
+1. Add support for "select everything but exclude x,y,z..."
+2. Better documentation.
+
 Any suggestions, comments, improvements, (some) pull requests are welcomed!

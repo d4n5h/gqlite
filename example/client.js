@@ -4,7 +4,6 @@ const client = require('../index').client;
 const gqlite = new client({
     server:'http://localhost:9090',
     path: '/gqlite',
-    client:'axios', // or 'undici'
     headers: {},
     extra:{
         // Extra options for axios or undici
@@ -20,21 +19,21 @@ gqlite.request('users/getAll', {
     }],
     type: 'GET',
 }).then((response) => {
-    console.log(response.data[0].posts);
+    console.log(response.data[0]);
 }).catch((err) => {
     console.log(err)
 })
 
 
-gqlite.request('users/getById', {
+/*gqlite.request('users/getById', {
     args: {
         id: 1,
     },
     select: {
-        username:{}
+        id:{}
     },
 }).then((response) => {
-    console.log(response);
+    console.log(response.data.posts);
 }).catch((err) => {
     console.log(err)
 })
@@ -67,10 +66,4 @@ gqlite.request('posts/create', {
     console.log(response);
 }).catch((err) => {
     console.log(err)
-})
-
-
-// For undici
-// gqlite.client.close().then(()=>{
-//     console.log('Closed')
-// })
+})*/

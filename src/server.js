@@ -13,31 +13,11 @@ module.exports = class {
          * @param  {Object} res
          */
         this.injectExpress = async (req, res) => {
-            if (req.query.client == 'axios') {
-                this.process(req.method, req.body, req.query, (err, response) => {
-                    if (err) return res.status(400).json(err)
-
-                    res.status(200).json(response)
-                })
-            } else {
-                let data = '';
-
-                req.on('data', (chunk) => {
-                    data += chunk;
-                });
-
-                req.on('end', () => {
-
-                    if (data && data != '' && data != 'null') data = JSON.parse(data)
-
-                    this.process(req.method, data, req.query, (err, response) => {
-                        if (err) return res.status(400).json(err)
-
-                        res.status(200).json(response)
-                    })
-                });
-
-            }
+            this.process(req.method, req.body, req.query, (err, response) => {
+                if (err) return res.status(400).json(err)
+                
+                res.status(200).json(response)
+            })
         }
 
         /**
