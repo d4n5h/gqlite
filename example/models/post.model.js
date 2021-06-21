@@ -20,31 +20,6 @@ class Post extends Model {
             }
         }
     };
-
-    static get jsonSchema() {
-        return {
-            type: 'object',
-            required: ['parentId', 'title', 'text'],
-
-            properties: {
-                id: {
-                    type: 'integer'
-                },
-                parentId: {
-                    type: ['integer', 'null']
-                },
-                title: {
-                    type: 'string',
-                    minLength: 1,
-                    maxLength: 255
-                },
-                text: {
-                    type: 'string',
-                    minLength: 1,
-                },
-            }
-        };
-    }
 }
 
 async function createSchema() {

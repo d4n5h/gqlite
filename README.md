@@ -98,6 +98,25 @@ const q = new gqliteServer();
 
 q.resolve({
     name: 'users',
+    schema:{
+        type: 'object',
+        required: ['username', 'password'],
+        properties: {
+            id: {
+                type: 'integer'
+            },
+            username: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 50
+            },
+            password: {
+                type: 'string',
+                minLength: 6,
+                maxLength: 50
+            },
+        }
+    },
     method: {
         getById: {
             query: {
@@ -142,6 +161,7 @@ Also, note that you can keep adding methods under methods like this:
 ```javascript
 {
     name: 'main',
+    schema:{...},
     method: {
         child: {
             query: {...},
@@ -161,15 +181,10 @@ Or just have one method:
 ```javascript
 {
     name: 'main',
+    schema:{...},
     query:{...}
     method:()=>{}
 }
-```
-
-Please note that the validation of the model itself will be handled in the Objection.js model using:
-
-```javascript
-static get jsonSchema(){...}
 ```
 
 For a more "complete" example, you can checkout the ./example directory:

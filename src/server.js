@@ -15,7 +15,7 @@ module.exports = class {
         this.injectExpress = async (req, res) => {
             this.process(req.method, req.body, req.query, (err, response) => {
                 if (err) return res.status(400).json(err)
-                
+
                 res.status(200).json(response)
             })
         }
@@ -52,18 +52,26 @@ module.exports = class {
                 let breadCrumbs = [];
                 if (model.indexOf('/') >= 0) breadCrumbs = model.split('/')
 
-                let final = null;
+                let final, root, type = null;
 
                 for (let i = 0; i < breadCrumbs.length; i++) {
                     if (!final) {
+                        root = this.models[breadCrumbs[i]]
+                        if (root.type) type = root.type
+
                         final = this.models[breadCrumbs[i]].method
                     } else {
+                        if (final[breadCrumbs[i]].type) type = final[breadCrumbs[i]].type
+
                         final = final[breadCrumbs[i]].method
                     }
                 }
 
                 // No breadcrumbs, so just get the main method
-                if (!final) final = this.models[model].method
+                if (!final) {
+                    final = this.models[model].method
+                    root = this.models[model]
+                }
 
                 if (!final) {
                     // Model doesn't exists
@@ -74,8 +82,9 @@ module.exports = class {
                     // Model exists, now lets validate the argumetns
                     if (!args) args = {};
 
-                    let validation = null;
+                    let validation;
                     if (final.query) validation = validate(args, final.query);
+                    if (type == 'mutation') validation = validate(args, root.schema);
 
                     if (validation && validation.errors.length > 0) {
                         // There's errors
@@ -140,9 +149,11 @@ module.exports = class {
     resolve(model) {
         if (!model.name) throw new Error('Model must have a name');
         if (!model.method) throw new Error('Model must have a method');
+        if (!model.schema) throw new Error('Model must have a schema');
         this.models[model.name] = {
             method: model.method,
-            query: model.query || null
+            query: model.query || null,
+            schema: model.schema
         }
     }
 }

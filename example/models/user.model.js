@@ -21,29 +21,6 @@ class User extends Model {
             }
         }
     };
-
-    static get jsonSchema() {
-        return {
-            type: 'object',
-            required: ['username', 'password'],
-
-            properties: {
-                id: {
-                    type: 'integer'
-                },
-                username: {
-                    type: 'string',
-                    minLength: 3,
-                    maxLength: 50
-                },
-                password: {
-                    type: 'string',
-                    minLength: 6,
-                    maxLength: 50
-                },
-            }
-        };
-    }
 }
 
 async function createSchema() {

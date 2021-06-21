@@ -6,7 +6,7 @@ const gqlite = new client({
     path: '/gqlite',
     headers: {},
     extra:{
-        // Extra options for axios or undici
+        // Extra options for axios
     }
 });
 
@@ -19,13 +19,13 @@ gqlite.request('users/getAll', {
     }],
     type: 'GET',
 }).then((response) => {
-    console.log(response.data[0]);
+    console.log(response);
 }).catch((err) => {
     console.log(err)
 })
 
 
-/*gqlite.request('users/getById', {
+gqlite.request('users/getById', {
     args: {
         id: 1,
     },
@@ -33,7 +33,7 @@ gqlite.request('users/getAll', {
         id:{}
     },
 }).then((response) => {
-    console.log(response.data.posts);
+    console.log(response);
 }).catch((err) => {
     console.log(err)
 })
@@ -66,4 +66,4 @@ gqlite.request('posts/create', {
     console.log(response);
 }).catch((err) => {
     console.log(err)
-})*/
+})
