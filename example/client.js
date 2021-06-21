@@ -56,12 +56,13 @@ gqlite.request('users/create', {
 gqlite.request('posts/create', {
     args: {},
     data: {
-        title: "Example post",
+        title: null,
         text: "This is an example of a post",
         parentId: 1,
     },
     select: {
-        id: {}
+        id: {},
+        title:{}
     },
 }).then((response) => {
     console.log(response);

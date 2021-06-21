@@ -97,7 +97,7 @@ module.exports = class {
                             }, null);
                         } else {
                             // All good, let's proceed by selecting what we want from the result
-                            final(args).then((result) => {
+                            final(args, data).then((result) => {
                                 // Done
                                 callback(null, {
                                     data: this._resolveSelect(result, select)

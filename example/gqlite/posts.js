@@ -26,9 +26,9 @@ module.exports = {
     },
     method: {
         create: {
-            method: async (args) => {
+            method: async (args, data) => {
                 return new Promise(async (resolve, reject) => {
-                    Post.query().insert(args).then((result) => {
+                    Post.query().insert(data).then((result) => {
                         resolve(result)
                     }).catch((err) => {
                         reject(err)

@@ -75,9 +75,9 @@ module.exports = {
                 },
                 required: ["username", "password"],
             },
-            method: (args) => {
+            method: (args, data) => {
                 return new Promise(async (resolve, reject) => {
-                    User.query().insert(args).then((result) => {
+                    User.query().insert(data).then((result) => {
                         resolve(result)
                     }).catch((err) => {
                         reject(err)
