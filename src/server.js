@@ -28,18 +28,20 @@ module.exports = class {
          * @param  {Function} callback
          */
         this.process = async (method, body, query, callback) => {
-            let args, select, model
+            let args, select, model, data
             if (method == 'GET') {
                 // The method is GET
                 const parsed = JSON.parse(query.payload)
                 args = parsed.args
                 select = parsed.select
                 model = parsed.model
+                data = parsed.data
             } else {
                 // Not GET
                 args = body.args
                 select = body.select
                 model = body.model
+                data = body.data
             }
 
             if (!model) {
@@ -52,17 +54,13 @@ module.exports = class {
                 let breadCrumbs = [];
                 if (model.indexOf('/') >= 0) breadCrumbs = model.split('/')
 
-                let final, root, type = null;
+                let final, root = null;
 
                 for (let i = 0; i < breadCrumbs.length; i++) {
                     if (!final) {
                         root = this.models[breadCrumbs[i]]
-                        if (root.type) type = root.type
-
                         final = this.models[breadCrumbs[i]].method
                     } else {
-                        if (final[breadCrumbs[i]].type) type = final[breadCrumbs[i]].type
-
                         final = final[breadCrumbs[i]].method
                     }
                 }
@@ -82,26 +80,33 @@ module.exports = class {
                     // Model exists, now lets validate the argumetns
                     if (!args) args = {};
 
-                    let validation;
+                    let validation, schemaValidation;
                     if (final.query) validation = validate(args, final.query);
-                    if (type == 'mutation') validation = validate(args, root.schema);
+                    if (data) schemaValidation = validate(data, root.schema);
 
-                    if (validation && validation.errors.length > 0) {
-                        // There's errors
+                    if (schemaValidation && schemaValidation.errors.length > 0) {
+                        // There's schema errors
                         callback({
-                            errors: validation.errors
+                            schemaErrors: schemaValidation.errors
                         }, null);
                     } else {
-                        // All good, let's proceed by selecting what we want from the result
-                        final(args).then((result) => {
-                            // Done
-                            callback(null, {
-                                data: this._resolveSelect(result, select)
+                        if (validation && validation.errors.length > 0) {
+                            // There's query errors
+                            callback({
+                                queryError: validation.errors
+                            }, null);
+                        } else {
+                            // All good, let's proceed by selecting what we want from the result
+                            final(args).then((result) => {
+                                // Done
+                                callback(null, {
+                                    data: this._resolveSelect(result, select)
+                                })
+                            }).catch((err) => {
+                                // Damn
+                                callback(err, null)
                             })
-                        }).catch((err) => {
-                            // Damn
-                            callback(err, null)
-                        })
+                        }
                     }
                 }
             }

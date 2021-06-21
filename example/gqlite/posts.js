@@ -26,22 +26,6 @@ module.exports = {
     },
     method: {
         create: {
-            query: {
-                type: "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "text": {
-                        "type": "string"
-                    },
-                    "parentId": {
-                        "type": "number"
-                    },
-                },
-                required: ["title", "text", "parentId"],
-            },
-            type: 'mutation',
             method: async (args) => {
                 return new Promise(async (resolve, reject) => {
                     Post.query().insert(args).then((result) => {
@@ -53,5 +37,4 @@ module.exports = {
             }
         }
     }
-
 }

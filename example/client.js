@@ -1,11 +1,10 @@
 const client = require('../index').client;
 
-
 const gqlite = new client({
-    server:'http://localhost:9090',
+    server: 'http://localhost:9090',
     path: '/gqlite',
     headers: {},
-    extra:{
+    extra: {
         // Extra options for axios
     }
 });
@@ -30,7 +29,7 @@ gqlite.request('users/getById', {
         id: 1,
     },
     select: {
-        id:{}
+        id: {}
     },
 }).then((response) => {
     console.log(response);
@@ -39,12 +38,13 @@ gqlite.request('users/getById', {
 })
 
 gqlite.request('users/create', {
-    args: {
-        username: "test2",
+    args: {},
+    data:{
+        username: "test",
         password: "password",
     },
     select: {
-        username:{}
+        username: {}
     },
 }).then((response) => {
     console.log(response);
@@ -54,13 +54,14 @@ gqlite.request('users/create', {
 
 
 gqlite.request('posts/create', {
-    args: {
+    args: {},
+    data: {
         title: "Example post",
         text: "This is an example of a post",
         parentId: 1,
     },
     select: {
-        id:{}
+        id: {}
     },
 }).then((response) => {
     console.log(response);
